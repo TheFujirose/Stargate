@@ -246,7 +246,7 @@ namespace BetterRimworlds.Stargate
                     // }
 
                     // Ignore power requirements during a solar flare.
-                    #if RIMWORLD15
+                    #if (RIMWORLD15 || RIMWORLD16)
                     // Solar flares do not exist in Rimworld v1.5.
                     var solarFlareDef = DefDatabase<GameConditionDef>.GetNamed("SolarFlare");
                     bool isSolarFlare = this.currentMap.gameConditionManager.ConditionIsActive(solarFlareDef);
@@ -384,7 +384,7 @@ namespace BetterRimworlds.Stargate
                 this.stargateBuffer.TryAdd(foundThing);
 
                 // Tell the MapDrawer that here is something thats changed
-                #if RIMWORLD15
+                #if (RIMWORLD15 || RIMWORLD16)
                 Find.CurrentMap.mapDrawer.MapMeshDirty(Position, MapMeshFlagDefOf.Things, true, false);
                 #else
                 Find.CurrentMap.mapDrawer.MapMeshDirty(Position, MapMeshFlag.Things, true, false);
@@ -433,7 +433,7 @@ namespace BetterRimworlds.Stargate
                 }
 
                 // Tell the MapDrawer that here is something thats changed
-                #if RIMWORLD15
+                #if (RIMWORLD15 || RIMWORLD16)
                 Find.CurrentMap.mapDrawer.MapMeshDirty(Position, MapMeshFlagDefOf.Things, true, false);
                 #else
                 Find.CurrentMap.mapDrawer.MapMeshDirty(Position, MapMeshFlag.Things, true, false);
@@ -458,7 +458,7 @@ namespace BetterRimworlds.Stargate
             this.stargateBuffer.TransmitContents();
 
             // Tell the MapDrawer that here is something thats changed
-            #if RIMWORLD15
+            #if RIMWORLD15 || RIMWORLD16
             Find.CurrentMap.mapDrawer.MapMeshDirty(Position, MapMeshFlagDefOf.Things, true, false);
             #else
             Find.CurrentMap.mapDrawer.MapMeshDirty(Position, MapMeshFlag.Things, true, false);
@@ -481,7 +481,7 @@ namespace BetterRimworlds.Stargate
             this.stargateBuffer.Empty();
 
             // Tell the MapDrawer that here is something that's changed.
-            #if RIMWORLD15
+            #if RIMWORLD15 || RIMWORLD16
             Find.CurrentMap.mapDrawer.MapMeshDirty(Position, MapMeshFlagDefOf.Things, true, false);
             #else
             Find.CurrentMap.mapDrawer.MapMeshDirty(Position, MapMeshFlag.Things, true, false);
@@ -735,7 +735,14 @@ namespace BetterRimworlds.Stargate
                             pawn.psychicEntropy = new Pawn_PsychicEntropyTracker(pawn);
                             // pawn.workSettings = new Pawn_WorkSettings(pawn);
 
+                            // pawn.skills.SkillsTick() doesn't exist in rimworld 1.6
+                            // It now has a Variable Tick Rate (VTR)
+                            #if !RIMWORLD16
                             pawn.skills.SkillsTick();
+                            #else
+                            pawn.DoTick();
+                            #endif
+
                             // Reset Skills Since Midnight.
                             foreach (SkillRecord skill in pawn.skills.skills)
                             {
@@ -782,11 +789,11 @@ namespace BetterRimworlds.Stargate
                         if (pawn.RaceProps.Humanlike)
                         {
                             // pawn.guest = new Pawn_GuestTracker(pawn);
-                            #if RIMWORLD12
+#if RIMWORLD12
                             pawn.guilt = new Pawn_GuiltTracker();
-                            #else
+#else
                             pawn.guilt = new Pawn_GuiltTracker(pawn);
-                            #endif
+#endif
                             pawn.abilities = new Pawn_AbilityTracker(pawn);
                             pawn.needs.mood.thoughts.memories = new MemoryThoughtHandler(pawn);
                         }
@@ -899,10 +906,10 @@ namespace BetterRimworlds.Stargate
                                         // Clear any custom data that might cause problems
                                         if (recoveryPawn.RaceProps.Humanlike)
                                         {
-                                            #if RIMWORLD12 || RIMWORLD13
+#if RIMWORLD12 || RIMWORLD13
                                             recoveryPawn.story.childhood = BackstoryDatabase.RandomBackstory(BackstorySlot.Childhood);
                                             recoveryPawn.story.adulthood = BackstoryDatabase.RandomBackstory(BackstorySlot.Adulthood);
-                                            #else
+#else
                                             recoveryPawn.story.Childhood = DefDatabase<BackstoryDef>
                                                 .AllDefsListForReading
                                                 .Where(bs => bs.slot == BackstorySlot.Childhood)
@@ -962,11 +969,11 @@ namespace BetterRimworlds.Stargate
 
                             if (thisPawn.RaceProps.Animal)
                             {
-                                #if RIMWORLD12
+#if RIMWORLD12
                                 // thisPawn.training = new Pawn_TrainingTracker(thisPawn);
-                                #else
+#else
                                 thisPawn.training.pawn = thisPawn;
-                                #endif
+#endif
                             }
 
                             if (thisPawn.RaceProps.ToolUser)
@@ -1022,11 +1029,11 @@ namespace BetterRimworlds.Stargate
             inboundBuffer.Clear();
 
             // Tell the MapDrawer that here is something that's changed
-            #if RIMWORLD15
+#if RIMWORLD15 || RIMWORLD16
             Find.CurrentMap.mapDrawer.MapMeshDirty(Position, MapMeshFlagDefOf.Things, true, false);
-            #else
+#else
             Find.CurrentMap.mapDrawer.MapMeshDirty(Position, MapMeshFlag.Things, true, false);
-            #endif
+#endif
 
             if (offworldEvent && hasTransmittedPawns)
             {
@@ -1065,7 +1072,7 @@ namespace BetterRimworlds.Stargate
             this.power.powerOutputInt = -1000 * this.chargeSpeed;
         }
 
-        #endregion
+#endregion
 
         #region Graphics-text
 

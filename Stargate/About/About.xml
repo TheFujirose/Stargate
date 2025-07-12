@@ -7,8 +7,9 @@
         <li>1.3</li>
         <li>1.4</li>
         <li>1.5</li>
+        <li>1.6</li>
     </supportedVersions>
-    <author>HopeSeekr</author>
+    <author>HopeSeekr and Fujirose</author>
     <url>https://ludeon.com/forums/index.php?topic=18995.0</url>
     <description>Version 10.0.0
 Please post all bug reports on the GitHub repo, if possible.
@@ -32,7 +33,8 @@ WARNING: This mod uses the Rimworld Base Save Functionality in ways that it was 
          again. At this time I do not know of a practical way to resolve this issue.
 
 Forked from Jaxxa's ED-Stargate (but only ~100 lines remain of the original code).
-
+Forked from HopeSeeker's Stargate
+* **[2025-07-12]** Fixed changes to run 1.6v. change to tick in skills. 
 * **[2025-02-13]** Rebuild relationships when a pawn comes through the Stargate.
 * **[2025-02-12]** Completely reimplemented relationships to being stored inside each Pawn's Gate Traveler brain implant.
 * **[2025-02-12]** Added the Gate Traveler brain implant.

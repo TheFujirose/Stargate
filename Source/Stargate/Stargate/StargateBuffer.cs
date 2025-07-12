@@ -157,7 +157,7 @@ namespace BetterRimworlds.Stargate
             Find.ColonistBar.MarkColonistsDirty();
 
             // Tell the MapDrawer that here is something that's changed.
-            #if RIMWORLD15
+            #if RIMWORLD15 || RIMWORLD16
             Find.CurrentMap.mapDrawer.MapMeshDirty(Position, MapMeshFlagDefOf.Things, true, false);
             #else
             Find.CurrentMap.mapDrawer.MapMeshDirty(Position, MapMeshFlag.Things, true, false);
@@ -187,10 +187,18 @@ namespace BetterRimworlds.Stargate
         {
             // var implantDef = DefDatabase<HediffDef>.GetNamedSilentFail("BetterRimworlds.Stargate.GateTravelerImplant");
             var implantDef = HediffDef.Named("GateTravelerImplant");
+
+            
+            //PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive no longer exists in Rimworld v1.6
+            #if RIMWORLD16
+            var pawnsWithGateTravelerImplant = PawnsFinder.AllMapsCaravansAndTravellingTransporters_Alive
+                .Where(pawn => pawn.health.hediffSet.HasHediff(implantDef))
+                .ToList();
+            #else
             var pawnsWithGateTravelerImplant = PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive
                 .Where(pawn => pawn.health.hediffSet.HasHediff(implantDef))
                 .ToList();
-
+            #endif
             Log.Error("Pawns with Gate Traveler Implant: " + pawnsWithGateTravelerImplant.Count);
 
             // Now you can do whatever you need with that list:
@@ -204,8 +212,14 @@ namespace BetterRimworlds.Stargate
                 foreach (var relationship in gateTravelImplant.relationships)
                 {
                     Log.Message($"Loading the relationship between {pawn.Name} and {relationship.pawnName}: {relationship.relationship}");
+                    //PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive no longer exists in Rimworld v1.6
+                    #if RIMWORLD16
+                    var pawn2 = PawnsFinder.AllCaravansAndTravellingTransporters_Alive.FirstOrDefault(p =>
+                        p.thingIDNumber == relationship.pawnID);
+                    #else
                     var pawn2 = PawnsFinder.AllMapsCaravansAndTravelingTransportPods_Alive.FirstOrDefault(p =>
                         p.thingIDNumber == relationship.pawnID);
+                    #endif
 
                     if (pawn2 == null)
                     {
